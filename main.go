@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -22,6 +23,7 @@ func (t *templateHeader) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	fmt.Println("start study-go-chat")
 	r := NewRoom()
 	http.Handle("/", &templateHeader{filename: "chat.html"})
 	http.Handle("/room", r)
@@ -30,7 +32,9 @@ func main() {
 	go r.run()
 
 	// run webserver
+	fmt.Println("run server http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
+
 }
