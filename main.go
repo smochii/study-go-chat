@@ -1,12 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"path/filepath"
 	"sync"
+
+	"github.com/go-yaml/yaml"
+	"go.uber.org/zap"
 )
 
 type templateHeader struct {
@@ -23,7 +26,18 @@ func (t *templateHeader) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	fmt.Println("start study-go-chat")
+	configYaml, err := ioutil.ReadFile("./zap_config.yaml")
+	if err != nil {
+		panic(err)
+	}
+	var zapConfig zap.Config
+	if err := yaml.Unmarshal(configYaml, &zapConfig); err != nil {
+		panic(err)
+	}
+	logger, _ := zapConfig.Build()
+
+	logger.Info("start study-go-chat")
+
 	r := NewRoom()
 	http.Handle("/", &templateHeader{filename: "chat.html"})
 	http.Handle("/room", r)
@@ -32,7 +46,8 @@ func main() {
 	go r.run()
 
 	// run webserver
-	fmt.Println("run server http://localhost:8080")
+	url := "http://localhost:8080"
+	logger.Info("run server", zap.String("url", url))
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}

@@ -1,0 +1,19 @@
+level: "debug"
+encoding: "json"
+encoderConfig:
+  messageKey: "Msg"
+  levelKey: "Level"
+  timeKey: "Time"
+  nameKey: "Name"
+  callerKey: "Caller"
+  stacktraceKey: "St"
+  levelEncoder: "capital"
+  timeEncoder: "iso8601"
+  durationEncoder: "string"
+  callerEncoder: "short"
+outputPaths:
+  - "./log/study-go-chat.log"
+  - "stdout"
+errorOutputPaths:
+  - "./log/study-go-chat.log"
+  - "stderr"
